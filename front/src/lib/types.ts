@@ -34,6 +34,7 @@ export type TaskInput = {
   due_date?: string | null;
   status: TaskStatus;
   completed_at?: string | null;
+  users_id?: number;
 };
 
 export type ListTasksParams = {

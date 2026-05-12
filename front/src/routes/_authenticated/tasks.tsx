@@ -28,13 +28,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { TaskFormDialog } from "@/components/task-form-dialog";
 import { useAuth } from "@/hooks/use-auth";
-import {
-  createTask,
-  deleteTask,
-  listTasks,
-  signOut,
-  updateTask,
-} from "@/lib/api";
+import { createTask, deleteTask, listTasks, signOut, updateTask } from "@/lib/api";
 import type { Task, TaskInput, TaskStatus } from "@/lib/types";
 import { STATUS_LABELS } from "@/lib/types";
 
@@ -112,7 +106,15 @@ function TasksPage() {
     if (editing) {
       await updateMutation.mutateAsync({ id: editing.id, input });
     } else {
-      await createMutation.mutateAsync(input);
+      if (!user) {
+        toast.error("Usuário não autenticado");
+        return;
+      }
+
+      await createMutation.mutateAsync({
+        ...input,
+        users_id: Number(user.id),
+      });
     }
   }
 
@@ -154,7 +156,10 @@ function TasksPage() {
               onChange={(e) => setSearch(e.target.value)}
             />
           </div>
-          <Select value={statusFilter} onValueChange={(v) => setStatusFilter(v as TaskStatus | "all")}>
+          <Select
+            value={statusFilter}
+            onValueChange={(v) => setStatusFilter(v as TaskStatus | "all")}
+          >
             <SelectTrigger className="sm:w-48">
               <SelectValue />
             </SelectTrigger>
@@ -240,11 +245,7 @@ function TasksPage() {
                   >
                     <Pencil className="h-4 w-4" />
                   </Button>
-                  <Button
-                    variant="outline"
-                    size="icon"
-                    onClick={() => setDeleting(task)}
-                  >
+                  <Button variant="outline" size="icon" onClick={() => setDeleting(task)}>
                     <Trash2 className="h-4 w-4" />
                   </Button>
                 </div>
@@ -274,9 +275,7 @@ function TasksPage() {
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel>Cancelar</AlertDialogCancel>
-            <AlertDialogAction
-              onClick={() => deleting && deleteMutation.mutate(deleting.id)}
-            >
+            <AlertDialogAction onClick={() => deleting && deleteMutation.mutate(deleting.id)}>
               Excluir
             </AlertDialogAction>
           </AlertDialogFooter>
