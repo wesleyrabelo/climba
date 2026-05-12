@@ -43,8 +43,27 @@ const schema = z.object({
     .trim()
     .min(1, { message: "Título obrigatório" })
     .max(200, { message: "Máximo 200 caracteres" }),
+
   description: z.string().max(2000).optional(),
-  due_date: z.date().optional().nullable(),
+
+  due_date: z
+    .date()
+    .nullable()
+    .optional()
+    .refine(
+      (date) => {
+        if (!date) return true;
+
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+
+        return date >= today;
+      },
+      {
+        message: "A data não pode ser anterior a hoje",
+      },
+    ),
+
   status: z.enum(["pending", "in_progress", "completed"]),
 });
 
@@ -81,9 +100,7 @@ export function TaskFormDialog({ open, onOpenChange, task, onSubmit }: Props) {
 
   async function handleSubmit(values: FormValues) {
     const completed_at =
-      values.status === "completed"
-        ? task?.completed_at ?? new Date().toISOString()
-        : null;
+      values.status === "completed" ? (task?.completed_at ?? new Date().toISOString()) : null;
 
     await onSubmit({
       title: values.title,
