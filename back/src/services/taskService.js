@@ -5,7 +5,7 @@ async function createTask(task) {
 
   const result = await pool.query(
     `
-      INSERT INTO task (
+      INSERT INTO tasks (
         title,
         description,
         due_date,
@@ -24,7 +24,7 @@ async function createTask(task) {
 async function getTasks() {
   const result = await pool.query(`
     SELECT *
-    FROM task
+    FROM tasks
     ORDER BY created_at DESC
   `);
 
@@ -35,7 +35,7 @@ async function getTaskById(id) {
   const result = await pool.query(
     `
       SELECT *
-      FROM task
+      FROM tasks
       WHERE id = $1
     `,
     [id],
@@ -49,7 +49,7 @@ async function updateTask(id, task) {
 
   const result = await pool.query(
     `
-      UPDATE task
+      UPDATE tasks
       SET
         title = $1,
         description = $2,
@@ -68,7 +68,7 @@ async function updateTask(id, task) {
 async function deleteTask(id) {
   await pool.query(
     `
-      DELETE FROM task
+      DELETE FROM tasks
       WHERE id = $1
     `,
     [id],
