@@ -47,19 +47,6 @@ async function getTaskByUserId(id, search, status) {
   return result.rows;
 }
 
-async function getTaskById(id) {
-  const result = await pool.query(
-    `
-      SELECT *
-      FROM tasks
-      WHERE id = $1
-    `,
-    [id],
-  );
-
-  return result.rows[0];
-}
-
 async function updateTask(id, task) {
   const { title, description, due_date, status, completed_at } = task;
 
@@ -94,7 +81,6 @@ async function deleteTask(id) {
 module.exports = {
   createTask,
   getTaskByUserId,
-  getTaskById,
   updateTask,
   deleteTask,
 };

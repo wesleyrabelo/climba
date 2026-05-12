@@ -1,21 +1,26 @@
 const {
   createTask,
   getTaskByUserId,
-  getTaskByTitle,
-  getTaskById,
   updateTask,
   deleteTask,
 } = require("../services/taskService");
 
 async function create(req, res) {
   try {
-    const task = await createTask(req.body);
+    const userId = Number(req.user.id);
 
-    res.status(201).json(task);
+    const taskData = {
+      ...req.body,
+      users_id: userId,
+    };
+
+    const task = await createTask(taskData);
+
+    return res.status(201).json(task);
   } catch (error) {
     console.error(error);
 
-    res.status(500).json({
+    return res.status(500).json({
       message: "Erro ao criar tarefa",
     });
   }
@@ -23,7 +28,8 @@ async function create(req, res) {
 
 async function findByUserId(req, res) {
   try {
-    const { id } = req.params;
+    const id = req.user.id;
+
     const { search, status } = req.query;
 
     const tasks = await getTaskByUserId(id, search, status);
@@ -34,28 +40,6 @@ async function findByUserId(req, res) {
 
     res.status(500).json({
       message: "Erro ao buscar tarefas",
-    });
-  }
-}
-
-async function findById(req, res) {
-  try {
-    const { id } = req.params;
-
-    const task = await getTaskById(id);
-
-    if (!task) {
-      return res.status(404).json({
-        message: "Tarefa não encontrada",
-      });
-    }
-
-    res.json(task);
-  } catch (error) {
-    console.error(error);
-
-    res.status(500).json({
-      message: "Erro ao buscar tarefa",
     });
   }
 }
@@ -103,7 +87,6 @@ async function remove(req, res) {
 module.exports = {
   create,
   findByUserId,
-  findById,
   update,
   remove,
 };

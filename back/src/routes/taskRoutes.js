@@ -1,5 +1,7 @@
 const express = require("express");
 
+const auth = require("../middleware/auth");
+
 const router = express.Router();
 
 const {
@@ -10,14 +12,12 @@ const {
   remove,
 } = require("../controllers/taskController");
 
-router.post("/", create);
+router.post("/", auth, create);
 
-router.get("/user/:id", findByUserId);
+router.get("/user", auth, findByUserId);
 
-router.get("/:id", findById);
+router.put("/:id", auth, update);
 
-router.put("/:id", update);
-
-router.delete("/:id", remove);
+router.delete("/:id", auth, remove);
 
 module.exports = router;

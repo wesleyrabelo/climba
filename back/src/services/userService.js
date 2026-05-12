@@ -1,4 +1,5 @@
 const pool = require("../db");
+const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 
 async function createUser(name, email, password) {
@@ -39,10 +40,18 @@ async function loginUser(email, password) {
     throw new Error("Senha inválida");
   }
 
+  const token = jwt.sign(
+    {
+      id: user.id,
+      email: user.email,
+    },
+    process.env.JWT_SECRET,
+    { expiresIn: "7d" },
+  );
+
   return {
-    id: user.id,
-    name: user.name,
-    email: user.email,
+    user: { id: user.id, name: user.name, email: user.email },
+    token,
   };
 }
 

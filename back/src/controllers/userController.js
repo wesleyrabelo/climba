@@ -20,17 +20,16 @@ async function login(req, res) {
   try {
     const { email, password } = req.body;
 
-    const user = await loginUser(email, password);
+    const data = await loginUser(email, password);
 
-    if (!user) {
+    if (!data) {
       return res.status(401).json({
         message: "Email ou senha inválidos",
       });
     }
 
     res.json({
-      message: "Login realizado",
-      user,
+      data,
     });
   } catch (error) {
     console.error(error);
