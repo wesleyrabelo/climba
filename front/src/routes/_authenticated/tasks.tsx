@@ -60,12 +60,13 @@ function TasksPage() {
   }, [search]);
 
   const tasksQuery = useQuery({
-    queryKey: ["tasks", { search: debouncedSearch, status: statusFilter }],
+    queryKey: ["tasks", user?.id, debouncedSearch, statusFilter],
     queryFn: () =>
-      listTasks(user?.id || "", {
-        search: debouncedSearch || undefined,
+      listTasks(user!.id, {
+        search: debouncedSearch,
         status: statusFilter === "all" ? undefined : statusFilter,
       }),
+    enabled: !!user?.id,
     retry: false,
   });
 
@@ -151,7 +152,7 @@ function TasksPage() {
             <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
             <Input
               className="pl-9"
-              placeholder="Pesquisar tarefas..."
+              placeholder="Pesquisar por título..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
             />

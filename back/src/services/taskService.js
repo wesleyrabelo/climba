@@ -21,13 +21,28 @@ async function createTask(task) {
   return result.rows[0];
 }
 
-async function getTaskByUserId(id) {
-  const result = await pool.query(`
+async function getTaskByUserId(id, search, status) {
+  let query = `
     SELECT *
     FROM tasks
-    WHERE users_id = ${id}
-    ORDER BY created_at DESC
-  `);
+    WHERE users_id = $1
+  `;
+
+  const params = [id];
+
+  if (search) {
+    params.push(`%${search}%`);
+    query += ` AND title ILIKE $${params.length}`;
+  }
+
+  if (status) {
+    params.push(status);
+    query += ` AND status = $${params.length}`;
+  }
+
+  query += ` ORDER BY created_at DESC`;
+
+  const result = await pool.query(query, params);
 
   return result.rows;
 }

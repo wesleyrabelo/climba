@@ -1,6 +1,7 @@
 const {
   createTask,
   getTaskByUserId,
+  getTaskByTitle,
   getTaskById,
   updateTask,
   deleteTask,
@@ -23,10 +24,9 @@ async function create(req, res) {
 async function findByUserId(req, res) {
   try {
     const { id } = req.params;
+    const { search, status } = req.query;
 
-    console.log(id);
-
-    const tasks = await getTaskByUserId(id);
+    const tasks = await getTaskByUserId(id, search, status);
 
     res.json(tasks);
   } catch (error) {
