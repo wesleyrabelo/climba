@@ -1,6 +1,6 @@
 const {
   createTask,
-  getTasks,
+  getTaskByUserId,
   getTaskById,
   updateTask,
   deleteTask,
@@ -20,10 +20,13 @@ async function create(req, res) {
   }
 }
 
-async function findAll(req, res) {
-  return;
+async function findByUserId(req, res) {
   try {
-    const tasks = await getTasks();
+    const { id } = req.params;
+
+    console.log(id);
+
+    const tasks = await getTaskByUserId(id);
 
     res.json(tasks);
   } catch (error) {
@@ -99,7 +102,7 @@ async function remove(req, res) {
 
 module.exports = {
   create,
-  findAll,
+  findByUserId,
   findById,
   update,
   remove,

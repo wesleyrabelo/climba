@@ -21,10 +21,11 @@ async function createTask(task) {
   return result.rows[0];
 }
 
-async function getTasks() {
+async function getTaskByUserId(id) {
   const result = await pool.query(`
     SELECT *
     FROM tasks
+    WHERE users_id = ${id}
     ORDER BY created_at DESC
   `);
 
@@ -77,7 +78,7 @@ async function deleteTask(id) {
 
 module.exports = {
   createTask,
-  getTasks,
+  getTaskByUserId,
   getTaskById,
   updateTask,
   deleteTask,

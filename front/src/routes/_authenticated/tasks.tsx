@@ -62,7 +62,7 @@ function TasksPage() {
   const tasksQuery = useQuery({
     queryKey: ["tasks", { search: debouncedSearch, status: statusFilter }],
     queryFn: () =>
-      listTasks({
+      listTasks(user?.id || "", {
         search: debouncedSearch || undefined,
         status: statusFilter === "all" ? undefined : statusFilter,
       }),

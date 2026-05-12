@@ -4,15 +4,15 @@ const router = express.Router();
 
 const {
   create,
-  findAll,
   findById,
+  findByUserId,
   update,
   remove,
 } = require("../controllers/taskController");
 
 router.post("/", create);
 
-router.get("/", findAll);
+router.get("/user/:id", findByUserId);
 
 router.get("/:id", findById);
 

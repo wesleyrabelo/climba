@@ -52,18 +52,10 @@ export async function getCurrentUser(): Promise<User | null> {
 
 // ----- Tasks -----
 
-export async function listTasks(params?: ListTasksParams): Promise<Task[]> {
+export async function listTasks(userId: string, params?: ListTasksParams): Promise<Task[]> {
   const queryParams = new URLSearchParams();
 
-  if (params?.search) {
-    queryParams.append("search", params.search);
-  }
-
-  if (params?.status) {
-    queryParams.append("status", params.status);
-  }
-
-  const response = await fetch(`${API_URL}/tasks?${queryParams.toString()}`);
+  const response = await fetch(`${API_URL}/tasks/user/${userId}`);
 
   if (!response.ok) {
     throw new Error("Erro ao buscar tarefas");
